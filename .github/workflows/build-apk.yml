@@ -4,9 +4,6 @@ name: Build OfflineStudy APK
 on:
   workflow_dispatch:
   push:
-    paths:
-      - "OfflineStudyApp-source.zip"
-      - ".github/workflows/build-apk.yml"
 
 jobs:
   build:
@@ -21,19 +18,19 @@ jobs:
           distribution: temurin
           java-version: "17"
 
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
-
       - name: Extract project
         run: |
+          sudo apt-get update
+          sudo apt-get install -y unzip
           unzip -o OfflineStudyApp-source.zip -d source
-          find source -name settings.gradle.kts -print
+          find source -name settings.gradle.kts
 
       - name: Build APK
         run: |
+          export ANDROID_HOME=/usr/local/lib/android/sdk
+          export ANDROID_SDK_ROOT=$ANDROID_HOME
           PROJECT_DIR="$(dirname "$(find source -name settings.gradle.kts -print -quit)")"
           cd "$PROJECT_DIR"
-          gradle --version
           gradle assembleDebug --stacktrace
 
       - name: Upload APK
