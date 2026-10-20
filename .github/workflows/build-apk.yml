@@ -31,6 +31,7 @@ jobs:
           export ANDROID_SDK_ROOT=$ANDROID_HOME
           PROJECT_DIR="$(dirname "$(find source -name settings.gradle.kts -print -quit)")"
           cd "$PROJECT_DIR"
+          sed -i '/^android {/a\    compileOptions {\n        sourceCompatibility JavaVersion.VERSION_17\n        targetCompatibility JavaVersion.VERSION_17\n    }\n    kotlinOptions {\n        jvmTarget = "17"\n    }' app/build.gradle.kts
           gradle assembleDebug --stacktrace
 
       - name: Upload APK
